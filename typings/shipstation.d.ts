@@ -27,7 +27,6 @@ export default class Shipstation {
     partnerKey?: string;
     private baseUrl;
     private timeout?;
-    private rateLimit?;
     constructor(options?: IShipstationOptions);
     request: ({ url, method, useBaseUrl, data, }: IShipstationRequestOptions) => Promise<import("axios").AxiosResponse<any, any>>;
 }

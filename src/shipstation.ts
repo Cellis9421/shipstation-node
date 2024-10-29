@@ -42,10 +42,6 @@ export default class Shipstation {
   public partnerKey?: string
   private baseUrl: string = 'https://ssapi.shipstation.com/'
   private timeout?: number
-  private rateLimit?: {
-    limit?: number
-    interval?: number
-  }
 
   constructor (options?: IShipstationOptions) {
     const key =
@@ -58,7 +54,7 @@ export default class Shipstation {
       options && options.partnerKey
         ? options.partnerKey : process.env.SS_PARTNER_KEY
 
-    this.rateLimit = options && options.rateLimit ? options.rateLimit : rateLimitOpts
+    const rateLimit = options && options.rateLimit ? options.rateLimit : rateLimitOpts
 
     if (!key || !secret) {
       // tslint:disable-next-line:no-console
@@ -70,7 +66,7 @@ export default class Shipstation {
     this.authorizationToken = base64.encode(`${key}:${secret}`)
 
     // Globally define API ratelimiting
-    this.request = stopcock(this.request, this.rateLimit)
+    this.request = stopcock(this.request, rateLimit)
 
     // Retry failed requests
     if (options && options.retry) {

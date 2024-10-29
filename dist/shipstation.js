@@ -51,12 +51,12 @@ var Shipstation = (function () {
         this.partnerKey =
             options && options.partnerKey
                 ? options.partnerKey : process.env.SS_PARTNER_KEY;
-        this.rateLimit = options && options.rateLimit ? options.rateLimit : rateLimitOpts;
+        var rateLimit = options && options.rateLimit ? options.rateLimit : rateLimitOpts;
         if (!key || !secret) {
             throw new Error("APIKey and API Secret are required! Provided API Key: " + key + " API Secret: " + secret);
         }
         this.authorizationToken = base64.encode(key + ":" + secret);
-        this.request = stopcock(this.request, this.rateLimit);
+        this.request = stopcock(this.request, rateLimit);
         if (options && options.retry) {
             axios_retry_1.default(axios_1.default, typeof options.retry === 'boolean' ? undefined : options.retry);
         }
