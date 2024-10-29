@@ -17,12 +17,17 @@ export interface IShipstationOptions {
     partnerKey?: string;
     retry?: IAxiosRetryConfig | boolean;
     timeout?: number;
+    rateLimit?: {
+        limit?: number;
+        interval?: number;
+    };
 }
 export default class Shipstation {
     authorizationToken: string;
     partnerKey?: string;
     private baseUrl;
     private timeout?;
+    private rateLimit?;
     constructor(options?: IShipstationOptions);
     request: ({ url, method, useBaseUrl, data, }: IShipstationRequestOptions) => Promise<import("axios").AxiosResponse<any, any>>;
 }
