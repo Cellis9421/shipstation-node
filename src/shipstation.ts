@@ -34,6 +34,7 @@ export interface IShipstationOptions {
   rateLimit?: {
     limit?: number
     interval?: number
+    bucketSize?: number
   }
 }
 
