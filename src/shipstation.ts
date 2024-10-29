@@ -8,7 +8,7 @@ const stopcock = require('stopcock')
 
 const rateLimitOpts = {
   limit: 40,
-  interval: 1000 * 40,
+  interval: 1000 * 60,
 }
 
 export enum RequestMethod {
@@ -31,6 +31,10 @@ export interface IShipstationOptions {
   partnerKey?: string
   retry?: IAxiosRetryConfig | boolean
   timeout?: number
+  rateLimit?: {
+    limit?: number
+    interval?: number
+  }
 }
 
 export default class Shipstation {
@@ -38,6 +42,10 @@ export default class Shipstation {
   public partnerKey?: string
   private baseUrl: string = 'https://ssapi.shipstation.com/'
   private timeout?: number
+  private rateLimit?: {
+    limit?: number
+    interval?: number
+  }
 
   constructor (options?: IShipstationOptions) {
     const key =
@@ -50,6 +58,8 @@ export default class Shipstation {
       options && options.partnerKey
         ? options.partnerKey : process.env.SS_PARTNER_KEY
 
+    this.rateLimit = options && options.rateLimit ? options.rateLimit : rateLimitOpts
+
     if (!key || !secret) {
       // tslint:disable-next-line:no-console
       throw new Error(
@@ -60,7 +70,7 @@ export default class Shipstation {
     this.authorizationToken = base64.encode(`${key}:${secret}`)
 
     // Globally define API ratelimiting
-    this.request = stopcock(this.request, rateLimitOpts)
+    this.request = stopcock(this.request, this.rateLimit)
 
     // Retry failed requests
     if (options && options.retry) {
